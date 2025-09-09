@@ -7,6 +7,7 @@ import (
 	"github.com/rashintha/nacha/util"
 )
 
+// NachaBatchControl represents the NACHA Batch Control (Type 8)
 type NachaBatchControl struct {
 	Type              string // Char Count: 1 | Fixed Value: 8
 	ServiceClassCode  string // Char Count: 3 | Values: Same as the Batch Header

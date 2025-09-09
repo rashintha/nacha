@@ -152,6 +152,7 @@ func (e *NachaEntry) SetTraceNumber(odfiId string, number string) error {
 
 func (e *NachaEntry) NewAddenda() *NachaAddenda {
 	addenda := &NachaAddenda{}
+	addenda.Default()
 	addenda.EntryDetailSequenceNumber = e.TraceNumber[len(e.TraceNumber)-7:]
 	e.Addenda = append(e.Addenda, addenda)
 	e.AddendaRecordIndicator = "1"

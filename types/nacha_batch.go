@@ -15,6 +15,7 @@ type NachaBatch struct {
 // AddEntry adds a new NachaEntry to the batch and appends it to the batch's Entries'
 func (b *NachaBatch) AddEntry() *NachaEntry {
 	entry := &NachaEntry{}
+	entry.Default()
 	b.Entries = append(b.Entries, entry)
 	return entry
 }
@@ -28,19 +29,19 @@ func (b *NachaBatch) GenerateBatchControl() {
 	totalDebits := int64(0)
 	totalCredits := int64(0)
 
-	for i := range b.Entries {
-		entriesAddendaCount += len(b.Entries[i].Addenda)
+	for _, entry := range b.Entries {
+		entriesAddendaCount += len(entry.Addenda)
 
-		RDFINumber, _ := strconv.ParseInt(b.Entries[i].ReceivingDFIIdentification, 10, 64)
+		RDFINumber, _ := strconv.ParseInt(entry.ReceivingDFIIdentification, 10, 64)
 		entryHash += RDFINumber
 
-		if b.Entries[i].TransactionCode == "27" || b.Entries[i].TransactionCode == "28" || b.Entries[i].TransactionCode == "37" || b.Entries[i].TransactionCode == "38" {
-			debitAmount, _ := strconv.ParseInt(b.Entries[i].Amount, 10, 64)
+		if entry.TransactionCode == "27" || entry.TransactionCode == "28" || entry.TransactionCode == "37" || entry.TransactionCode == "38" {
+			debitAmount, _ := strconv.ParseInt(entry.Amount, 10, 64)
 			totalDebits += debitAmount
 		}
 
-		if b.Entries[i].TransactionCode == "22" || b.Entries[i].TransactionCode == "23" || b.Entries[i].TransactionCode == "32" || b.Entries[i].TransactionCode == "33" {
-			creditAmount, _ := strconv.ParseInt(b.Entries[i].Amount, 10, 64)
+		if entry.TransactionCode == "22" || entry.TransactionCode == "23" || entry.TransactionCode == "32" || entry.TransactionCode == "33" {
+			creditAmount, _ := strconv.ParseInt(entry.Amount, 10, 64)
 			totalCredits += creditAmount
 		}
 	}
