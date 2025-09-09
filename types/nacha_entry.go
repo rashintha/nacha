@@ -3,6 +3,7 @@ package types
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/rashintha/nacha/util"
@@ -27,6 +28,8 @@ type NachaEntry struct {
 	DiscretionaryData      string // Char Count: 2 | Optional
 	AddendaRecordIndicator string // Char Count: 1 | Value: 0 - No Addenda Record, 1 - Addenda Record
 	TraceNumber            string // Char Count: 15 | Value: First 8 digits of the ODFI Routing Number plus Entry Detail Sequence Number
+
+	Addenda []*NachaAddenda // Optional
 }
 
 // Default sets the default values for the NachaEntry
@@ -36,12 +39,12 @@ func (e *NachaEntry) Default() {
 }
 
 // SetTransactionCode sets the TransactionCode
-func (e *NachaEntry) SetTransactionCode(code string) error {
-	if code != "22" && code != "23" && code != "27" && code != "28" && code != "32" && code != "33" && code != "37" && code != "38" {
+func (e *NachaEntry) SetTransactionCode(code int) error {
+	if code != 22 && code != 23 && code != 27 && code != 28 && code != 32 && code != 33 && code != 37 && code != 38 {
 		return errors.New("TransactionCode must be 22, 23, 27, 28, 32, 33, 37, or 38")
 	}
 
-	e.TransactionCode = code
+	e.TransactionCode = strconv.Itoa(code)
 	return nil
 }
 
@@ -76,7 +79,7 @@ func (e *NachaEntry) SetDFIAccountNumber(number string) error {
 }
 
 // SetAmount sets the Amount
-func (e *NachaEntry) SetAmount(amount float32) error {
+func (e *NachaEntry) SetAmount(amount float64) error {
 	if amount < 1 {
 		return errors.New("Amount must be greater than 0")
 	}
@@ -105,14 +108,14 @@ func (e *NachaEntry) SetIndividualName(name string) error {
 		return errors.New("IndividualName cannot be empty")
 	}
 
-	e.IndividualName = strings.ToUpper(util.ToFixedWidthString(name, 22, false))
+	e.IndividualName = util.ToFixedWidthString(strings.ToUpper(name), 22, false)
 	return nil
 }
 
 // SetDiscretionaryData sets the DiscretionaryData
 // If the data is more than 2 characters, it will be truncated
 func (e *NachaEntry) SetDiscretionaryData(data string) {
-	e.DiscretionaryData = strings.ToUpper(util.ToFixedWidthString(data, 2, false))
+	e.DiscretionaryData = util.ToFixedWidthString(strings.ToUpper(data), 2, false)
 }
 
 // SetDiscretionaryDataToDefault sets the DiscretionaryData to the default value of ""
@@ -145,4 +148,12 @@ func (e *NachaEntry) SetTraceNumber(odfiId string, number string) error {
 	}
 	e.TraceNumber = odfiId + util.ToFixedWidthZeroString(number, 7)
 	return nil
+}
+
+func (e *NachaEntry) NewAddenda() *NachaAddenda {
+	addenda := &NachaAddenda{}
+	addenda.EntryDetailSequenceNumber = e.TraceNumber[len(e.TraceNumber)-7:]
+	e.Addenda = append(e.Addenda, addenda)
+	e.AddendaRecordIndicator = "1"
+	return addenda
 }

@@ -93,7 +93,7 @@ func (h *NachaFileHeader) SetImmediateDestinationName(name string) error {
 		return errors.New("ImmediateDestinationName cannot be empty")
 	}
 
-	h.ImmediateDestinationName = strings.ToUpper(util.ToFixedWidthString(name, 23, false))
+	h.ImmediateDestinationName = util.ToFixedWidthString(strings.ToUpper(name), 23, false)
 	return nil
 }
 
@@ -104,7 +104,7 @@ func (h *NachaFileHeader) SetImmediateOriginName(name string) error {
 		return errors.New("ImmediateOriginName cannot be empty")
 	}
 
-	h.ImmediateOriginName = strings.ToUpper(util.ToFixedWidthString(name, 23, false))
+	h.ImmediateOriginName = util.ToFixedWidthString(strings.ToUpper(name), 23, false)
 	return nil
 }
 

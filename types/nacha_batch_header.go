@@ -61,13 +61,13 @@ func (h *NachaBatchHeader) SetCompanyName(name string) error {
 		return errors.New("CompanyName cannot be empty")
 	}
 
-	h.CompanyName = strings.ToUpper(util.ToFixedWidthString(name, 16, false))
+	h.CompanyName = util.ToFixedWidthString(strings.ToUpper(name), 16, false)
 	return nil
 }
 
 // SetCompanyDiscretionaryData sets the CompanyDiscretionaryData
 func (h *NachaBatchHeader) SetCompanyDiscretionaryData(data string) {
-	h.CompanyDiscretionaryData = strings.ToUpper(util.ToFixedWidthString(data, 20, false))
+	h.CompanyDiscretionaryData = util.ToFixedWidthString(strings.ToUpper(data), 20, false)
 }
 
 // SetCompanyDiscretionaryDataToDefault sets the CompanyDiscretionaryData to the default value of ""
@@ -107,7 +107,7 @@ func (h *NachaBatchHeader) SetCompanyEntryDescription(description string) error 
 		return errors.New("CompanyEntryDescription must be 10 characters or less")
 	}
 
-	h.CompanyEntryDescription = strings.ToUpper(util.ToFixedWidthString(description, 10, false))
+	h.CompanyEntryDescription = util.ToFixedWidthString(strings.ToUpper(description), 10, false)
 	return nil
 }
 
