@@ -207,3 +207,11 @@ func main() {
 
 ```
 
+## License
+
+This project is licensed under the [Apache-2.0 license](LICENSE)
+
+## Contributing
+
+We welcome contributions to the NACHA Generator project! For more detailed information, please read our [contribution guidelines](CONTRIBUTING.md).
+
