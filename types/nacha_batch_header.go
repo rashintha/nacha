@@ -2,6 +2,7 @@ package types
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 	"time"
 
@@ -45,12 +46,12 @@ func (h *NachaBatchHeader) SetType() {
 }
 
 // SetServiceClassCode sets the ServiceClassCode
-func (h *NachaBatchHeader) SetServiceClassCode(code string) error {
-	if code != "200" && code != "220" && code != "225" {
+func (h *NachaBatchHeader) SetServiceClassCode(code int) error {
+	if code != 200 && code != 220 && code != 225 {
 		return errors.New("ServiceClassCode must be 200, 220, or 225")
 	}
 
-	h.ServiceClassCode = code
+	h.ServiceClassCode = strconv.Itoa(code)
 	return nil
 }
 
@@ -156,14 +157,11 @@ func (h *NachaBatchHeader) SetODFIIdentification(id string) error {
 }
 
 // SetBatchNumber sets the BatchNumber
-func (h *NachaBatchHeader) SetBatchNumber(number string) error {
-	if number == "" {
-		return errors.New("BatchNumber cannot be empty")
-	}
-	if len(number) > 7 {
-		return errors.New("BatchNumber must be 7 characters or less")
+func (h *NachaBatchHeader) SetBatchNumber(number int) error {
+	if number < 1 || number > 9999999 {
+		return errors.New("BatchNumber must be between 1 and 9999999")
 	}
 
-	h.BatchNumber = util.ToFixedWidthZeroString(number, 7)
+	h.BatchNumber = util.ToFixedWidthZeroString(strconv.Itoa(number), 7)
 	return nil
 }

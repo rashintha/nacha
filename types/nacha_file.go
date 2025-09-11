@@ -72,6 +72,15 @@ func (f *NachaFile) GenerateFileControl() {
 	}
 }
 
+// GenerateFile generates the NACHA file content
+func (f *NachaFile) GenerateFile() {
+	for _, batch := range f.Batches {
+		batch.GenerateBatchControl()
+	}
+
+	f.GenerateFileControl()
+}
+
 // String returns the NACHA file as a string
 func (f *NachaFile) String() string {
 	// File Header

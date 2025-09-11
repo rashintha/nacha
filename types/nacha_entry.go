@@ -36,6 +36,7 @@ type NachaEntry struct {
 func (e *NachaEntry) Default() {
 	e.Type = "6"
 	e.DiscretionaryData = util.ToFixedWidthString("", 2, false)
+	e.AddendaRecordIndicator = "0"
 }
 
 // SetTransactionCode sets the TransactionCode
@@ -124,32 +125,32 @@ func (e *NachaEntry) SetDiscretionaryDataToDefault() {
 }
 
 // SetAddendaRecordIndicator sets the AddendaRecordIndicator
-func (e *NachaEntry) SetAddendaRecordIndicator(indicator string) error {
-	if indicator != "0" && indicator != "1" {
-		return errors.New("AddendaRecordIndicator must be 0 or 1")
-	}
+func (e *NachaEntry) SetAddendaRecordIndicator(indicator bool) {
 
-	e.AddendaRecordIndicator = indicator
-	return nil
+	if indicator {
+		e.AddendaRecordIndicator = "1"
+	} else {
+		e.AddendaRecordIndicator = "0"
+	}
 }
 
-func (e *NachaEntry) SetTraceNumber(odfiId string, number string) error {
+// SetTraceNumber sets the TraceNumber
+func (e *NachaEntry) SetTraceNumber(odfiId string, number int) error {
 	if odfiId == "" {
 		return errors.New("ODFIId cannot be empty")
-	}
-	if number == "" {
-		return errors.New("TraceNumber cannot be empty")
-	}
-	if len(number) > 7 {
-		return errors.New("TraceNumber must be 7 characters or less")
 	}
 	if len(odfiId) != 8 {
 		return errors.New("ODFIId must be 8 characters")
 	}
-	e.TraceNumber = odfiId + util.ToFixedWidthZeroString(number, 7)
+	if number < 0 || number > 9999999 {
+		return errors.New("number must be between 0 and 99999999")
+	}
+
+	e.TraceNumber = odfiId + util.ToFixedWidthZeroString(strconv.Itoa(number), 7)
 	return nil
 }
 
+// NewAddenda creates a new NachaAddenda and adds it to the Addenda slice
 func (e *NachaEntry) NewAddenda() *NachaAddenda {
 	addenda := &NachaAddenda{}
 	addenda.Default()

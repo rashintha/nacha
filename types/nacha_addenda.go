@@ -8,6 +8,7 @@ import (
 	"github.com/rashintha/nacha/util"
 )
 
+// NachaAddenda represents the NACHA Addenda (Type 7)
 type NachaAddenda struct {
 	Type                      string // Char Count: 1 | Fixed Value: 7
 	AddendaTypeCode           string // Char Count: 2 | Values: 05 - PPD & CCD
@@ -23,6 +24,7 @@ func (a *NachaAddenda) Default() {
 	a.PaymentRelatedInformation = util.ToFixedWidthString("", 80, false)
 }
 
+// SetType sets the Type to 7
 func (a *NachaAddenda) SetType() {
 	a.Type = "7"
 }
@@ -58,13 +60,11 @@ func (a *NachaAddenda) SetAddendaSequenceNumber(seq int) error {
 }
 
 // SetEntryDetailSequenceNumber sets the EntryDetailSequenceNumber
-func (a *NachaAddenda) SetEntryDetailSequenceNumber(seq string) error {
-	if seq == "" {
-		return errors.New("EntryDetailSequenceNumber cannot be empty")
+func (a *NachaAddenda) SetEntryDetailSequenceNumber(seq int) error {
+	if seq < 1 || seq > 9999999 {
+		return errors.New("EntryDetailSequenceNumber must be between 1 and 9999999")
 	}
-	if len(seq) > 7 {
-		return errors.New("EntryDetailSequenceNumber must be 7 characters or less")
-	}
-	a.EntryDetailSequenceNumber = util.ToFixedWidthZeroString(seq, 7)
+
+	a.EntryDetailSequenceNumber = util.ToFixedWidthZeroString(strconv.Itoa(seq), 7)
 	return nil
 }

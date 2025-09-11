@@ -39,12 +39,12 @@ func (b *NachaBatchControl) SetType() {
 }
 
 // SetServiceClassCode sets the ServiceClassCode
-func (b *NachaBatchControl) SetServiceClassCode(code string) error {
-	if code != "200" && code != "220" && code != "225" {
+func (b *NachaBatchControl) SetServiceClassCode(code int) error {
+	if code != 200 && code != 220 && code != 225 {
 		return errors.New("ServiceClassCode must be 200, 220, or 225")
 	}
 
-	b.ServiceClassCode = code
+	b.ServiceClassCode = strconv.Itoa(code)
 	return nil
 }
 

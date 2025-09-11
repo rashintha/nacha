@@ -6,6 +6,7 @@ import (
 	"github.com/rashintha/nacha/util"
 )
 
+// NachaBatch represents the NACHA Batch
 type NachaBatch struct {
 	Header  NachaBatchHeader
 	Entries []*NachaEntry
